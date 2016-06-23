@@ -1,5 +1,40 @@
 # s3vs.rb
 
+Pseudo-Synced Object backed by S3.
+
+## Synopsis
+
+```ruby
+require "s3vs"
+
+s3vs_obj = S3VS::Object.new(
+  bucket: "mybucket", # or env `S3VS_BUCKET`
+  key:    "path/to/mydata.json", # or env `S3VS_KEY`
+  # auto_sync: true, # by default
+  # s3_options: {}, # cf. http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
+)
+
+my_obj = {
+  string:  "ABC",
+  integer: 123,
+  float:   4.56,
+  array:   [7, 8, 9],
+  hash:    {mykey: "myvalue"}
+}
+
+s3vs_obj.set(my_obj)
+```
+
+and below from other process or machine...
+
+```ruby
+require "s3vs"
+
+s3vs_obj = S3VS::Object.new(bucket: "mybucket", key: "path/to/mydata.json", auto_sync: false)
+
+s3vs_obj.load.get #=> equal to my_obj
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
